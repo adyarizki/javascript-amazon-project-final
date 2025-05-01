@@ -10,12 +10,8 @@ import {formatCurency} from "../utils/money.js";
 import {hello} from "https://unpkg.com/supersimpledev@1.0.1/hello.esm.js";
 import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js ';
 import {deliveryOptions, getDeliveryOption} from '../../data/deliveryOptions.js';
+import { renderPaymentSumary} from './paymentSummary.js';
 
-hello();
-
-const today = dayjs();
-const deliveryDate = today.add(7, 'days');
-console.log(deliveryDate.format('dddd, MMMM D'));
 
 export function renderOrderSumary() {
 
@@ -143,6 +139,7 @@ export function renderOrderSumary() {
                 
                 uppdateCartQuantity();
         
+                renderPaymentSumary();
                 
             })
         })
@@ -153,6 +150,7 @@ export function renderOrderSumary() {
                     const {productId, deliveryOptionId} = elemen.dataset
                     updateDeliveryOption(productId, deliveryOptionId);
                     renderOrderSumary();
+                    renderPaymentSumary();
                 });
             });
 

@@ -7,10 +7,12 @@ import {
 } from '../../data/cart.js';
 import {products, getProduct} from '../../data/products.js';
 import {formatCurency} from "../utils/money.js";
-import {hello} from "https://unpkg.com/supersimpledev@1.0.1/hello.esm.js";
-import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js ';
-import {deliveryOptions, getDeliveryOption} from '../../data/deliveryOptions.js';
-import { renderPaymentSumary} from './paymentSummary.js';
+// import {hello} from "https://unpkg.com/supersimpledev@1.0.1/hello.esm.js";
+import  dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js ';
+import {deliveryOptions, getDeliveryOption, calculateDeliveryDate} from '../../data/deliveryOptions.js';
+import {renderPaymentSumary} from './paymentSummary.js';
+import {renderCheckoutHeader} from './checkoutHeader.js';
+
 
 
 export function renderOrderSumary() {
@@ -26,14 +28,8 @@ export function renderOrderSumary() {
 
     const deliveryOption = getDeliveryOption(deliveryOptionId);
 
-    const today = dayjs();
-    const deliveryDate = today.add(
-        deliveryOption.deliveryDays,
-        'days'
-    );
-    const dateString = deliveryDate.format(
-        'dddd, MMMM D'  
-    );
+    const dateString = calculateDeliveryDate(deliveryOption);
+
 
     cartSummaryHTML += `
         <div class="cart-item-container js-cart-item-container-${matchingProduct.id}">
@@ -85,14 +81,8 @@ export function renderOrderSumary() {
 
         let html ='';
         deliveryOptions.forEach((deliveryOption) => {
-        const today = dayjs();
-        const deliveryDate = today.add(
-            deliveryOption.deliveryDays,
-            'days'
-        );
-        const dateString = deliveryDate.format(
-        'dddd, MMMM D'  
-        );
+        
+        const dateString = calculateDeliveryDate(deliveryOption);
 
         const priceString = deliveryOption.priceCents 
         === 0
@@ -130,6 +120,7 @@ export function renderOrderSumary() {
         .forEach((link) => {
             link.addEventListener('click', () => {
                 const productId =  link.dataset.productId;
+                uppdateCartQuantity();
                 removeFromCart(productId);
                 
                 const container = document.querySelector(
@@ -137,8 +128,9 @@ export function renderOrderSumary() {
                 );
                 container.remove();
                 
-                uppdateCartQuantity();
-        
+               
+                renderCheckoutHeader();
+                renderOrderSumary();
                 renderPaymentSumary();
                 
             })
@@ -197,8 +189,10 @@ export function renderOrderSumary() {
                         alert('Please enter a quantity between 1 and 999.');
                         return;
                     }
-                    
                     updateQuantity(productId, newQuantity);
+                    renderCheckoutHeader();
+                    renderOrderSummary();
+                    renderPaymentSummary();
 
 
                     const quantityLabel = document.querySelector(

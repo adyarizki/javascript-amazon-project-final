@@ -61,6 +61,8 @@ export function calculateCartQuantity(){
     })
 
     return cartQuantity;
+
+    saveToStorage();
 }
 
 export function updateQuantity(productId, newQuantity) {

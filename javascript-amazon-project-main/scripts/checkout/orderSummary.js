@@ -10,12 +10,12 @@ import {formatCurency} from "../utils/money.js";
 // import {hello} from "https://unpkg.com/supersimpledev@1.0.1/hello.esm.js";
 import  dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js ';
 import {deliveryOptions, getDeliveryOption, calculateDeliveryDate} from '../../data/deliveryOptions.js';
-import {renderPaymentSumary} from './paymentSummary.js';
+import {renderPaymentSummary} from './paymentSummary.js';
 import {renderCheckoutHeader} from './checkoutHeader.js';
 
 
 
-export function renderOrderSumary() {
+export function renderOrderSummary() {
 
     let cartSummaryHTML = '';
 
@@ -32,7 +32,9 @@ export function renderOrderSumary() {
 
 
     cartSummaryHTML += `
-        <div class="cart-item-container js-cart-item-container-${matchingProduct.id}">
+        <div class="cart-item-container 
+            js-cart-item-container
+            js-cart-item-container-${matchingProduct.id}">
             <div class="delivery-date">
                 Delivery date: ${dateString}
             </div>
@@ -48,7 +50,7 @@ export function renderOrderSumary() {
                 <div class="product-price">
                     $${formatCurency(matchingProduct.priceCents) }
                 </div>
-                <div class="product-quantity">
+                <div class="product-quantity js-product-quantity-${matchingProduct.id}">
                     <span>
                     Quantity: <span class="quantity-label js-quantity-label-${matchingProduct.id}">${cartItem.quantity}</span>
                     </span>
@@ -59,7 +61,7 @@ export function renderOrderSumary() {
                     </span>
                     <input class="quantity-input js-quantity-input" data-product-id="${matchingProduct.id}">
                     <span class="save-quantity-link link-primary js-save-link" data-product-id="${matchingProduct.id}">Save</span>
-                    <span class="delete-quantity-link link-primary js-delete-link" 
+                    <span class="delete-quantity-link link-primary js-delete-link js-delete-link-${matchingProduct.id}" 
                     data-product-id="${matchingProduct.id}">
                     Delete
                     </span>
@@ -130,8 +132,8 @@ export function renderOrderSumary() {
                 
                
                 renderCheckoutHeader();
-                renderOrderSumary();
-                renderPaymentSumary();
+                renderOrderSummary();
+                renderPaymentSummary();
                 
             })
         })
@@ -141,20 +143,18 @@ export function renderOrderSumary() {
                 elemen.addEventListener('click', () => {
                     const {productId, deliveryOptionId} = elemen.dataset
                     updateDeliveryOption(productId, deliveryOptionId);
-                    renderOrderSumary();
-                    renderPaymentSumary();
+                    renderOrderSummary();
+                    renderPaymentSummary();
                 });
             });
 
-        function uppdateCartQuantity() {
-            
-            const cartQuantity = calculateCartQuantity();
-
-
-            document.querySelector('.js-return-to-home-link')
-            .innerHTML = `${cartQuantity} items`;
-            
-        }
+            function uppdateCartQuantity() {
+                const cartQuantity = calculateCartQuantity();
+                
+                document.querySelector('.js-return-to-home-link')
+                .innerHTML = `${cartQuantity} items`;
+        
+              }
 
         uppdateCartQuantity();
 

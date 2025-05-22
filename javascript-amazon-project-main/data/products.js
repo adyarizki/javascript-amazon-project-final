@@ -120,6 +120,9 @@ export function loadProductsFetch(params) {
       return new Product(productDetail);
     });
     console.log('load products');
+  }).catch((error) => {
+    console.log('unexpected error. please try again later');
+    
   });
   return promise;
 }
